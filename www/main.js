@@ -3,10 +3,8 @@
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { GUI } from 'three/addons/libs/lil-gui.module.min.js';
-// import { FontLoader } from 'three/addons/loaders/FontLoader.js';
-
-console.log("Is anyone out there?")
-//const data_path = "C:\\Users\\CMADSEN\\AppData\\Local\\Temp\\RtmpGq8npP/user_dat.geojson"
+// Access shiny.min.js from the parent window (the Shiny app)
+const ShinyApp = window.parent.Shiny;
 
 // -----------------------------------------------
 // SETTINGS
@@ -42,15 +40,8 @@ function updateHeights() {
 	//const largest_height = 0;
 	// We have an array of meshes that were created when the data was loaded. Try to pull Z dimension from these.
 	shapes.forEach((shape, i) => {
-		//new_heights.push(shape.z);
-
-		//const growth_rate = (shape.z - shape.old_z) / anim_steps;
 		const growth_rate = (new_heights[i] - shape.z) / anim_steps;
 		growth_rates.push(growth_rate);
-		//if(shape.z > 10){
-			//heights_need_scaling = true;
-			//largest_height = shape.z;
-		//}
 	})
 	//console.log("new heights are " + new_heights)
 	new_heights_to_apply = true;
@@ -105,18 +96,12 @@ function animate() {
 				if(Math.abs(height_delta) > 0){
 					// Are we within 0.001 of the new height? If so, set old_z to new height and be done with animation.
 					if(Math.abs(height_delta) <= 0.01){
-						shape.z = new_heights[i];
+						shape.z = new_heights[i]; // Hard-code shape.z to be the new height
 					} else {
-						if(height_delta > 0.001){
+						//if(height_delta > 0.001){
 							shape.scale.z += 0.10 * growth_rates[i];
 							shape.position.z += 0.1 * growth_rates[i];
 							shape.z += growth_rates[i];
-						}
-						if(height_delta < 0.001){
-							shape.scale.z -= 0.10 * growth_rates[i];
-							shape.position.z -= 0.1 * growth_rates[i];
-							shape.z -= growth_rates[i];
-						}
 					}
 					// Is this shape one that's being moused over by the user? If so, increase brightness of colour.
 					if(shape.label == moused_shape){
@@ -143,9 +128,7 @@ function onWindowResize() {
 	if(canvasWidth < canvasHeight){
 		camera.fov = 30 * (canvasHeight / canvasWidth);
 	}
-	//camera.fov =  200000/(canvasWidth * canvasHeight);
 	camera.updateProjectionMatrix();
-
 	renderer.setAnimationLoop( animate );
 }
 
@@ -167,7 +150,6 @@ const renderer = new THREE.WebGLRenderer( { antialias: true } );
 renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setPixelRatio( window.devicePixelRatio );
 const container = document.getElementById( 'container' );
-//const loader = new FontLoader();
 container.appendChild( renderer.domElement );
 
 // Add mouse controls
@@ -214,11 +196,6 @@ function onPointerMove(e) {
 	mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
 	mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
 
-	// Update position of info table.
-	//info_table.style.top = e.clientY + 'px';
-	//console.log('clientY is ' + e.clientY)
-	//info_table.style.left = e.clientX + 'px';
-
 	raycaster.setFromCamera( mouse, camera );
 
 	const intersections = raycaster.intersectObjects( shapes, true );
@@ -227,7 +204,6 @@ function onPointerMove(e) {
 		const object = intersections[ 0 ].object;
 		if (object.label != "BASE"){
 			moused_shape = object.label;
-			//field_name.innerText = "Region: ";
 			label_value.innerText = moused_shape;
 			field_value.innerText = object.z;
 			// Adjust colour of that shape.
@@ -317,16 +293,14 @@ gui.add( params, "Rotate" ).onChange( function () {
 	// Reset animation loop.
 	renderer.setAnimationLoop( animate );
 } );
-gui.add( params, "update_heights" ).onChange( function () {
-	updateHeights();
-} );
 
 gui.open();
 
 // -----------------------------------------------------
 // This whole section reads in a geojson file that describes a MULTIPOLYGON
 // and adds each polygon to the shapes array to be visualized.
-Shiny.addCustomMessageHandler("geojsonData", function(geojsonData) {
+// ShinyApp below was just Shiny
+ShinyApp.addCustomMessageHandler("geojsonData", function(geojsonData) {
     // Loop over each feature in the GeoJSON (which corresponds to a polygon or multipolygon)
     geojsonData.features.forEach((feature) => {
       // Check if the feature is a polygon or multipolygon
@@ -338,12 +312,11 @@ Shiny.addCustomMessageHandler("geojsonData", function(geojsonData) {
         const shape = new THREE.Shape();
         const label = polygon.properties.label;
   			console.log('label is ' + label)
-  			//const height = polygon.properties.z;
-  			const height = 2;
+  			const height = 1;
   			if(polygon.properties.label == 'BASE'){
   				extrudeSettings['depth'] = 0.1;
   			} else {
-  			  // In initial rendering, set all to default value of 2.
+  			  // In initial rendering, set all to default value of 1.
 				  extrudeSettings['depth'] = height;
 			  }
 			  var polygon_coords = polygon.geometry.coordinates
@@ -397,7 +370,8 @@ Shiny.addCustomMessageHandler("geojsonData", function(geojsonData) {
     });
 });
 
-Shiny.addCustomMessageHandler("heightData", function(heightData) {
+// ShinyApp below was just Shiny
+ShinyApp.addCustomMessageHandler("heightData", function(heightData) {
   console.log(heightData);
   new_heights = heightData['height'];
   updateHeights()
