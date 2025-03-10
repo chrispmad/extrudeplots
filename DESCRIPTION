@@ -1,0 +1,15 @@
+Package: extrudeplots
+Type: Package
+Title: What the Package Does (Title Case)
+Version: 0.1.0
+Authors@R: person(
+    "Chris", "Madsen",
+    role = c("aut", "cre", "cph"),
+    email = "chris.madsen@gov.bc.ca",
+    comment = NULL
+  )
+Description: More about what it does (maybe more than one line).
+    Continuation lines should be indented.
+License: What license is it under?
+Encoding: UTF-8
+LazyData: true
