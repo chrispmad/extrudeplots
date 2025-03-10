@@ -12,7 +12,13 @@ ui <- page_fillable(
       card(
         h3("Main Panel")
       ),
-      uiOutput('my_plot')
+      # uiOutput('my_plot')
+      tags$iframe(
+        src = "index_trimmed.html",  # Your Three.js visualization
+        height = "500px",
+        width = "100%",
+        style = "border:none;"  # Optional: Remove border for a cleaner look
+      )
       # shiny::selectInput('geometryReceived',label = '',choices = c(T,F), selected = F)#,
       # tags$iframe(src = "index_trimmed.html", height = 500, width = '100%')
     ),
@@ -82,17 +88,17 @@ server <- function(input, output, session) {
     session$sendCustomMessage("geojsonData", dat_to_send)
   })
 
-  output$my_plot <- renderUI({
-    browser()
-    shiny::isolate({
-      tags$iframe(
-        src = "index_trimmed.html",  # Your Three.js visualization
-        height = "500px",
-        width = "100%",
-        style = "border:none;"  # Optional: Remove border for a cleaner look
-      )
-    })
-  })
+  # output$my_plot <- renderUI({
+  #   browser()
+  #   shiny::isolate({
+  #     tags$iframe(
+  #       src = "index_trimmed.html",  # Your Three.js visualization
+  #       height = "500px",
+  #       width = "100%",
+  #       style = "border:none;"  # Optional: Remove border for a cleaner look
+  #     )
+  #   })
+  # })
 
   # Keep an ear out to listen for a message from main.js that
   # indicates the geometry arrived successfully.
