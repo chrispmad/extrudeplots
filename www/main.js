@@ -24,19 +24,17 @@ const max_height = 10;
 
 // -----------------------------------------------
 // FUNCTIONS
-function getQueryParam() {
-  //let urlParams = new URLSearchParams(window.location.search);
-  //return urlParams.get(name);
-}
-
+// Get iframe's unique ID from URL parameters
 function get_id(){
   //return window.frameElement.getAttribute("data-outputid")
   //return getQueryParam('id')
+  //console.log("main.js is running in iframe: ", window.location.href);
   let url = window.location.href;
   return url.split("id=")[1];
 }
 
-console.log("main.js is running in iframe:", window.location.href);
+let outputId = get_id();
+console.log("main.js is running in iframe: ", outputId);
 
 function setHSLColor(z, s = 50, l = 50) {
 	const h = Math.floor(z * 36); // Hue: 0 to 360 degrees
@@ -317,10 +315,7 @@ gui.open();
 // This whole section reads in a geojson file that describes a MULTIPOLYGON
 // and adds each polygon to the shapes array to be visualized.
 // ShinyApp below was just Shiny
-ShinyApp.addCustomMessageHandler("geojsonData", function(message) {
-
-    console.log("attempting to send all data to " + get_id());
-    console.log("This iframe's ID should be" + get_id())
+ShinyApp.addCustomMessageHandler("geojsonData_" + outputId, function(message) {
 
     if (get_id() == message.iframeID){
 
@@ -394,10 +389,7 @@ ShinyApp.addCustomMessageHandler("geojsonData", function(message) {
 });
 
 // ShinyApp below was just Shiny
-ShinyApp.addCustomMessageHandler("heightData", function(message) {
-
-  console.log("attempting to send height data to " + get_id());
-  console.log("This iframe's ID should be" + get_id())
+ShinyApp.addCustomMessageHandler("heightData_" + outputId, function(message) {
 
     if (get_id() == message.iframeID){
       new_heights = message.data['height'];
