@@ -32,11 +32,12 @@ function getQueryParam() {
 function get_id(){
   //return window.frameElement.getAttribute("data-outputid")
   //return getQueryParam('id')
+  console.log("main.js is running in iframe: ", window.location.href);
   let url = window.location.href;
   return url.split("id=")[1];
 }
 
-console.log("main.js is running in iframe:", window.location.href);
+console.log("main.js is running in iframe: ", window.location.href);
 
 function setHSLColor(z, s = 50, l = 50) {
 	const h = Math.floor(z * 36); // Hue: 0 to 360 degrees
@@ -320,7 +321,7 @@ gui.open();
 ShinyApp.addCustomMessageHandler("geojsonData", function(message) {
 
     console.log("attempting to send all data to " + get_id());
-    console.log("This iframe's ID should be" + get_id())
+    console.log("This iframe's ID should be " + get_id())
 
     if (get_id() == message.iframeID){
 
