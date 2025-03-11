@@ -56,6 +56,17 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	</head>
 	<body>
+    <script>
+      // Function to get query parameters
+      function getQueryParam(param) {
+          let urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get(param);
+      }
+
+      // Extract iframe ID from URL
+      outputId = getQueryParam("id") || "defaultID";  // Fallback in case no ID
+      console.log("Iframe ID:", outputId);
+    </script>
 	  <script type="module" src = "main.js"></script>
     <div id = 'container'></div>
     <div id = "info_table">
