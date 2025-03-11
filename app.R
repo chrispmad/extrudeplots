@@ -47,14 +47,14 @@ renderExtrudePlot = function(outputId = NULL, dat, label_col = NULL, height_col 
     if(session$userData[[paste0('first_data_send_',outputId)]]() == F){
       dat_to_send = dat |>
         geojsonio::geojson_list(auto_unbox = T)
-      session$sendCustomMessage("geojsonData", list(
+      session$sendCustomMessage(paste0("geojsonData_",outputId), list(
         iframeID = outputId,
         data = dat_to_send
       ))
       session$userData[[paste0('first_data_send_',outputId)]](T)
     } else {
       # Geometries have been sent; just send height updates.
-      session$sendCustomMessage("heightData", list(
+      session$sendCustomMessage(paste0("heightData_",outputId), list(
         iframeID = outputId,
         data = dat |> dplyr::select(label, height)
       ))
@@ -126,10 +126,10 @@ server <- function(input, output, session) {
   })
 
   dt_l_2 = reactive({
-    req(!is.null(input$cols_to_include))
+    req(!is.null(input$cols_to_include_b))
     height_sum_tbl = dt |>
       sf::st_drop_geometry() |>
-      dplyr::select(label, input$cols_to_include) |>
+      dplyr::select(label, input$cols_to_include_b) |>
       tidyr::pivot_longer(cols = -label) |>
       dplyr::group_by(label) |>
       dplyr::reframe(height = sum(value))
