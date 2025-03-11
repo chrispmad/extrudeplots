@@ -24,6 +24,20 @@ const max_height = 10;
 
 // -----------------------------------------------
 // FUNCTIONS
+function getQueryParam() {
+  //let urlParams = new URLSearchParams(window.location.search);
+  //return urlParams.get(name);
+}
+
+function get_id(){
+  //return window.frameElement.getAttribute("data-outputid")
+  //return getQueryParam('id')
+  let url = window.location.href;
+  return url.split("id=")[1];
+}
+
+console.log("main.js is running in iframe:", window.location.href);
+
 function setHSLColor(z, s = 50, l = 50) {
 	const h = Math.floor(z * 36); // Hue: 0 to 360 degrees
 	//const s = Math.floor(Math.random() * 50) + 50; // Saturation: 50 to 100%
@@ -296,13 +310,22 @@ gui.add( params, "Rotate" ).onChange( function () {
 
 gui.open();
 
+
+
+
 // -----------------------------------------------------
 // This whole section reads in a geojson file that describes a MULTIPOLYGON
 // and adds each polygon to the shapes array to be visualized.
 // ShinyApp below was just Shiny
-ShinyApp.addCustomMessageHandler("geojsonData", function(geojsonData) {
+ShinyApp.addCustomMessageHandler("geojsonData", function(message) {
+
+    console.log("attempting to send all data to " + get_id());
+    console.log("This iframe's ID should be" + get_id())
+
+    if (get_id() == message.iframeID){
+
     // Loop over each feature in the GeoJSON (which corresponds to a polygon or multipolygon)
-    geojsonData.features.forEach((feature) => {
+    message.data.features.forEach((feature) => {
       // Check if the feature is a polygon or multipolygon
       if (feature.geometry.type === 'Polygon' || feature.geometry.type === 'MultiPolygon') {
 
@@ -311,7 +334,6 @@ ShinyApp.addCustomMessageHandler("geojsonData", function(geojsonData) {
       polygons.forEach(polygon => {
         const shape = new THREE.Shape();
         const label = polygon.properties.label;
-  			console.log('label is ' + label)
   			const height = 1;
   			if(polygon.properties.label == 'BASE'){
   				extrudeSettings['depth'] = 0.1;
@@ -368,13 +390,19 @@ ShinyApp.addCustomMessageHandler("geojsonData", function(geojsonData) {
         });
       }
     });
+}
 });
 
 // ShinyApp below was just Shiny
-ShinyApp.addCustomMessageHandler("heightData", function(heightData) {
-  console.log(heightData);
-  new_heights = heightData['height'];
-  updateHeights()
+ShinyApp.addCustomMessageHandler("heightData", function(message) {
+
+  console.log("attempting to send height data to " + get_id());
+  console.log("This iframe's ID should be" + get_id())
+
+    if (get_id() == message.iframeID){
+      new_heights = message.data['height'];
+      updateHeights()
+    }
 });
 // Enable initial state of the animation described above.
 renderer.setAnimationLoop( animate );
