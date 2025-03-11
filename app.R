@@ -1,66 +1,7 @@
 library(shiny)
 library(bslib)
 library(htmltools)
-
-extrudePlotOutput = function(outputId = NULL, height = '500px', width = '100%', style = "border:none;"){
-  if(is.null(outputId)) stop("outputId must be named for extrudePlotOutput()")
-  tags$iframe(
-    id = outputId,
-    #name = outputId,
-    `data-outputid` = outputId,
-    src = paste0("extrude_plot_widget.html?id=",outputId),
-    height = height,
-    width = width,
-    style = style
-  )
-}
-
-renderExtrudePlot = function(outputId = NULL, dat, label_col = NULL, height_col = NULL, session){
-  observe({
-    if(is.null(outputId)) stop("outputId must be named for renderExtrudePlot()")
-    if(is.null(session)) stop("session must be 'session = session'")
-    if(is.reactive(dat)) dat = dat()
-    if(is.null(label_col)){
-      if('label' %in% names(dat)) {
-        label_col = 'label' # Check for obvious labelling
-      } else {
-        stop("label_col cannot be NULL for renderExtrudePlot()")
-      }
-    }
-    if(is.null(height_col)){
-      if('label' %in% names(dat)) {
-        height_col = 'label' # Check for obvious labelling
-      } else {
-        stop("height_col cannot be NULL for renderExtrudePlot()")
-      }
-    }
-    dat = dat |>
-      dplyr::rename(label = !!rlang::sym(label_col),
-                    height = !!rlang::sym(height_col))
-    # If no reactiveVal exists for this outputId to track first data send, create it.
-    if(!exists(paste0('first_data_send_',outputId), envir = session$userData)){
-      # Create first_data_send reactive and ship it to global env
-      session$userData[[paste0('first_data_send_',outputId)]] <- reactiveVal(FALSE)
-      print(paste0("Using reactiveVal first_data_send_",outputId))
-    }
-    # Send data first time to main.js
-    if(session$userData[[paste0('first_data_send_',outputId)]]() == F){
-      dat_to_send = dat |>
-        geojsonio::geojson_list(auto_unbox = T)
-      session$sendCustomMessage(paste0("geojsonData_",outputId), list(
-        iframeID = outputId,
-        data = dat_to_send
-      ))
-      session$userData[[paste0('first_data_send_',outputId)]](T)
-    } else {
-      # Geometries have been sent; just send height updates.
-      session$sendCustomMessage(paste0("heightData_",outputId), list(
-        iframeID = outputId,
-        data = dat |> dplyr::select(label, height)
-      ))
-    }
-  })
-}
+library(extrudeplots)
 
 ui <- page_fillable(
   layout_sidebar(
