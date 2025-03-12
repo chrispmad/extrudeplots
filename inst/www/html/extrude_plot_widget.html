@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>My first three.js app</title>
-		<style>
+		<!--<style>
 		body { margin: 0; }
       #container {
         width: 100%;
@@ -43,7 +43,8 @@
       .minitable {
         background: lightblue; margin-top: -1rem; height:80%; width:95%; margin-left:2.5%; border-radius: 1%;
       }
-    </style>
+    </style>-->
+    <link rel="stylesheet" href="/extrudeplots/css/styles.css" type="text/css">
 		<script type="importmap">
       {
         "imports": {
@@ -52,12 +53,21 @@
         }
       }
     </script>
-    <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/shiny@1.7.1/dist/shiny.min.js"></script>-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!--<script src="shiny.min.js"></script>-->
 	</head>
 	<body>
-	  <script type="module" src = "main.js"></script>
+    <script>
+      // Function to get query parameters
+      function getQueryParam(param) {
+          let urlParams = new URLSearchParams(window.location.search);
+          return urlParams.get(param);
+      }
+
+      // Extract iframe ID from URL
+      outputId = getQueryParam("id") || "defaultID";  // Fallback in case no ID
+      console.log("Iframe ID:", outputId);
+    </script>
+	  <script type="module" src = "/extrudeplots/js/main.js"></script>
     <div id = 'container'></div>
     <div id = "info_table">
       <h1 style = 'margin-top:-1rem;'>Information</h5>

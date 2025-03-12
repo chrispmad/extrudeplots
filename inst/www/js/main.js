@@ -11,7 +11,7 @@ const ShinyApp = window.parent.Shiny;
 // Extrude settings - change these to alter how tall etc. the shapes are.
 const extrudeSettings = {
 	steps: 2,
-	depth: 0.5,
+	depth: 1.5,
 	bevelEnabled: true,
 	bevelThickness: 0.5,
 	bevelSize: 0.05,
@@ -198,7 +198,7 @@ const params = {
 // Add document listeners.
 document.addEventListener('pointermove', onPointerMove);
 // Resize canvas when window is resized!
-window.addEventListener( 'resize', onWindowResize );
+window.addEventListener('resize', onWindowResize);
 
 // On mouse-over shapes, identify moused-over shape and update text label
 function onPointerMove(e) {
@@ -221,10 +221,10 @@ function onPointerMove(e) {
 			// Adjust colour of that shape.
 			shapes.forEach(shape => {
 				if(shape.label == moused_shape){
-					shape.material.color.set(setHSLColor(shape.old_z, 50, 75));
+					shape.material.color.set(setHSLColor(shape.z, 50, 75));
 				} else {
 					if(shape.label != "BASE"){
-						shape.material.color.set(setHSLColor(shape.old_z));
+						shape.material.color.set(setHSLColor(shape.z));
 					}
 				}
 			})
@@ -234,7 +234,7 @@ function onPointerMove(e) {
 		label_value.innerText = " ";
 		shapes.forEach(shape => {
 			if(shape.label != "BASE"){
-				shape.material.color.set(setHSLColor(shape.old_z));
+				shape.material.color.set(setHSLColor(shape.z));
 			}
 		})
 	}
