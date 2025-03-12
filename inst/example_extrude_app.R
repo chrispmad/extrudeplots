@@ -46,9 +46,10 @@ ui <- page_fillable(
 server <- function(input, output, session) {
 
   # Set the working directory to the www folder (if not already)
-  if(!stringr::str_detect(getwd(),"www$")) setwd(paste0(getwd(),"/www"))
+  # if(!stringr::str_detect(getwd(),"www$")) setwd(paste0(getwd(),"/www"))
 
-  dt = sf::read_sf('dt.gpkg')
+  dt = extrudeplots::dt
+  # dt = sf::read_sf('dt.gpkg')
 
   dt_l = reactive({
     req(!is.null(input$cols_to_include))
