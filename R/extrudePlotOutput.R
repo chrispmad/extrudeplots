@@ -12,7 +12,8 @@ extrudePlotOutput = function(outputId = NULL, height = '500px', width = '100%', 
   tags$iframe(
     id = outputId,
     # `data-outputid` = outputId,
-    src = paste0("extrude_plot_widget.html?id=",outputId),
+    # src = paste0("extrude_plot_widget.html?id=",outputId),
+    src = paste0('/extrudeplots/html/extrude_plot_widget.html?id=',outputId),
     height = height,
     width = width,
     style = style

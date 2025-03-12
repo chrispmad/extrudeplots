@@ -9,6 +9,7 @@
 #' @returns One half of a Shiny-compatible render and output combo. You don't need to assign this to Shiny's output list
 #' @export
 renderExtrudePlot = function(outputId = NULL, dat, label_col = NULL, height_col = NULL, session){
+  addResourcePath("extrudeplots", system.file("www", package = "extrudeplots"))
   observe({
     if(is.null(outputId)) stop("outputId must be named for renderExtrudePlot()")
     if(is.null(session)) stop("session must be 'session = session'")
