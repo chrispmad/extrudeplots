@@ -22,8 +22,8 @@ renderExtrudePlot = function(outputId = NULL, dat, label_col = NULL, height_col 
       }
     }
     if(is.null(height_col)){
-      if('label' %in% names(dat)) {
-        height_col = 'label' # Check for obvious labelling
+      if('height' %in% names(dat)) {
+        height_col = 'height' # Check for obvious labelling
       } else {
         stop("height_col cannot be NULL for renderExtrudePlot()")
       }

@@ -11,7 +11,7 @@ ui <- page_fillable(
       card(
         h3("Main Panel"),
         bslib::layout_column_wrap(
-          1/2,
+          width = 1/2,
           card(
             h5('A'),
             extrudePlotOutput('nr_regs')
@@ -45,11 +45,7 @@ ui <- page_fillable(
 
 server <- function(input, output, session) {
 
-  # Set the working directory to the www folder (if not already)
-  # if(!stringr::str_detect(getwd(),"www$")) setwd(paste0(getwd(),"/www"))
-
   dt = extrudeplots::dt
-  # dt = sf::read_sf('dt.gpkg')
 
   dt_l = reactive({
     req(!is.null(input$cols_to_include))
