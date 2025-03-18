@@ -3,7 +3,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>My first three.js app</title>
-    <link rel="stylesheet" href="/extrudeplots/css/extrudePlotStyles.css" type="text/css">
+    <!--<link rel="stylesheet" href="/extrudeplots/css/styles.css" type="text/css">-->
 		<script type="importmap">
       {
         "imports": {
@@ -21,32 +21,11 @@
           let urlParams = new URLSearchParams(window.location.search);
           return urlParams.get(param);
       }
-
       // Extract iframe ID from URL
       outputId = getQueryParam("id") || "defaultID";  // Fallback in case no ID
       console.log("Iframe ID:", outputId);
     </script>
-	  <script type="module" src = "/extrudeplots/js/extrudePlot.js"></script>
+	  <script type="module" src = "/extrudeplots/js/holoMap.js"></script>
     <div id = 'container'></div>
-    <div id = "info_table">
-      <h1 style = 'margin-top:-1rem;'>Information</h5>
-      <div class = 'minitable'>
-        <div id = 'row1' class = 'row'>
-            <div id = 'col1' class = 'col little'>
-              <p id = 'label_name'>Region: </p>
-            </div>
-            <div id = 'col2' class = 'col big'>
-              <p id = 'label_value'> </p>
-            </div>
-        </div>
-        <div id = 'row2' class = 'row'>
-          <div id = 'col3' class = 'col little'>
-            <p id = 'field_name'>Z: </p>
-          </div>
-          <div id = 'col4' class = 'col big'>
-            <p id = 'field_value'> </p>
-          </div>
-        </div>
-    </div>
 	</body>
 </html>
