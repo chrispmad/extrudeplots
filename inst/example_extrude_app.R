@@ -10,8 +10,8 @@ ui <- page_fillable(
       width = 12,
       card(
         h3("Main Panel"),
-        bslib::layout_column_wrap(
-          width = 1/2,
+        list(
+          # width = 1/2,
           card(
             h5('A'),
             extrudePlotOutput('nr_regs')

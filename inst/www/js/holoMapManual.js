@@ -55,7 +55,20 @@ renderer.setSize( window.innerWidth, window.innerHeight );
 renderer.setPixelRatio( window.devicePixelRatio );
 const container = document.getElementById( 'container' );
 container.appendChild( renderer.domElement );
-const material = new THREE.MeshPhongMaterial({ 
+//onst material = new THREE.MeshPhongMaterial({ 
+//	//color: 0x232020, // black
+//	//color: 0x15177a, // purple
+//	color: 0x272629, // dark grey
+//	side: THREE.DoubleSide,
+//	alphaToCoverage: true,
+//	shininess: 5,            // Shiny surface
+//	//specular: 0x232020,        // Subtle specular highlights
+//	specular: 0xc2c2c2,        // light grey specular light
+//	transparency: 0.5,
+//	reflectivity: 1
+//});
+
+ const material = new THREE.MeshPhongMaterial({ 
 	//color: 0x232020, // black
 	//color: 0x15177a, // purple
 	color: 0x272629, // dark grey
@@ -66,7 +79,6 @@ const material = new THREE.MeshPhongMaterial({
 	specular: 0xc2c2c2,        // light grey specular light
 	reflectivity: 1
  });
-const cellSize = 0.25;
 
 // Add mouse controls
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -84,7 +96,7 @@ light.castShadow = true; // default false
 //const directional_light_colour = '0xd2c5d9' // very light purple light
 const directional_light_colour = '0xf2f1e6' // extremely light yellow light
 const directionalLight = new THREE.DirectionalLight(directional_light_colour, 1);
-directionalLight.position.set(20, 20, 30);
+directionalLight.position.set(-20, -20, 30);
 scene.add(directionalLight);
 // ----------------------------------------------------------
 // Variables and parameters
@@ -93,7 +105,6 @@ var cols = [];
 var rows = [];
 var vert_z_container = Array;
 var vert_z_frozen = Array;
-let waveMap;
 const shapes = [];
 const params = {
 	Rotate: false,
@@ -127,7 +138,7 @@ gui.open();
 // ShinyApp below was just Shiny
 //ShinyApp.addCustomMessageHandler("geojsonData_" + outputId, function(message) {
 
-fetch("van_matrix.json")
+fetch("vanlidar.json")
   .then(response => response.json())
   .then(mdata => {
 	mdata = JSON.parse(mdata)
@@ -135,27 +146,6 @@ fetch("van_matrix.json")
 	cols = mdata[0].length
 
 	const geometry = new THREE.PlaneGeometry(cols, rows, cols - 1, rows - 1);
-
-	//waveMap = Array(rows).fill().map(() => Array(cols).fill(-1));
-	//waveMap[0][0] = 1; // First frame
-
-	//for (let i = 2; i <= cols; i++) { // `i` corresponds to the frame number
-	//	for (let r = 0; r < rows; r++) {
-	//		for (let c = 0; c < cols; c++) {
-	//			if (waveMap[r][c] == -1) { // Only assign if not set
-	//				// Check if this cell is adjacent to a cell with wave number (i-1)
-	//				if (
-	//					(r > 0 && waveMap[r - 1][c] == i - 1) ||  // Above
-	//					(r < rows - 1 && waveMap[r + 1][c] == i - 1) ||  // Below
-	//					(c > 0 && waveMap[r][c - 1] == i - 1) ||  // Left
-	//					(c < cols - 1 && waveMap[r][c + 1] == i - 1)  // Right
-	//				) {
-	//					waveMap[r][c] = i;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
 
 	vert_z_container = Array(geometry.attributes.position.array);
 	vert_z_frozen = Array(geometry.attributes.position.array);
@@ -168,10 +158,9 @@ fetch("van_matrix.json")
 		for(let c = 0; c < cols-1; c++){
 			// Set height to 1 for all vertices initially.
 			vertices[(r*cols + c)*3 + 2] = 1;
-			//vertices[(r*cols + c)*3 + 2] = mdata[r][c] / 5;
 
-			// Save the 'real' height to this array of heights
-			vert_z_container[(r*cols + c)] = mdata[r][c] / 5;
+			// Save the 'real' (transformed) height to this array of heights
+			vert_z_container[(r*cols + c)] = mdata[r][c] / 2;
 			vert_z_frozen[(r*cols + c)] = true;
 		}
 	}
@@ -183,7 +172,7 @@ fetch("van_matrix.json")
 	shapes.push(mesh)
 
 	renderer.setAnimationLoop( animate );
-	}
+	} 
 );
 
 let currentRow = 0;
@@ -259,6 +248,9 @@ function animate() {
 		updateHeights()
 	}
 
+	//if(Ripple){
+	//	rippleHeights()
+	//}
 	//if(!Rotate){
 	//	requestAnimationFrame(animate);
 	//}
