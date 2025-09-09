@@ -1,3 +1,10 @@
+#' Render Example Extrude App
+#'
+#' @returns An interactive shiny app of BC's natural resource regions
+#' @export
+#'
+#' @examples
+#' example_extrude_app()
 example_extrude_app = function(){
   library(shiny)
   library(bslib)
